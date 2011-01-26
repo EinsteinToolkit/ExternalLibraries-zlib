@@ -1,0 +1,8 @@
+# Configuration definitions for thorn zlib
+
+PROVIDES zlib
+{
+  SCRIPT zlib.sh
+  LANG bash
+  OPTIONS ZLIB_DIR
+}
