@@ -92,6 +92,11 @@ if [ -z "${ZLIB_DIR}" -o "${ZLIB_DIR}" = 'BUILD' ]; then
         if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
             export OBJECT_MODE=64
         fi
+        # Disable parallel make. With parallel make, I sometimes
+        # encounter a build error "ld: in libz.a, malformed archive
+        # TOC entry for _zlibVersion, offset 824872 is beyond end of
+        # file 237568 for architecture x86_64"
+        unset MAKEFLAGS
         
         echo "zlib: Preparing directory structure..."
         mkdir build external done 2> /dev/null || true
