@@ -51,7 +51,9 @@ fi
 # Build
 ################################################################################
 
-if [ -z "${ZLIB_DIR}" -o "${ZLIB_DIR}" = 'BUILD' ]; then
+if [ -z "${ZLIB_DIR}"                                                   \
+     -o "$(echo "${ZLIB_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]
+then
     echo "BEGIN MESSAGE"
     echo "Building zlib..."
     echo "END MESSAGE"
