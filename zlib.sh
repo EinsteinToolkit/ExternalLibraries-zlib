@@ -5,7 +5,9 @@
 ################################################################################
 
 # Set up shell
-set -x                          # Output commands
+if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
+    set -x                      # Output commands
+fi
 set -e                          # Abort on errors
 
 
@@ -64,39 +66,35 @@ then
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${ZLIB_INSTALL_DIR}" ]; then
-        echo "BEGIN MESSAGE"
-        echo "ZLIB install directory, ZLIB_INSTALL_DIR, not set. Installing in the default configuration location. "
-        echo "END MESSAGE"
-     INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+        INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
     else
         echo "BEGIN MESSAGE"
-        echo "ZLIB install directory, ZLIB_INSTALL_DIR, selected. Installing ZLIB at ${ZLIB_INSTALL_DIR} "
+        echo "Installing zlib into ${ZLIB_INSTALL_DIR}"
         echo "END MESSAGE"
-     INSTALL_DIR=${ZLIB_INSTALL_DIR}
+        INSTALL_DIR=${ZLIB_INSTALL_DIR}
     fi
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     ZLIB_DIR=${INSTALL_DIR}
     
-(
-    exec >&2                    # Redirect stdout to stderr
-    set -x                      # Output commands
-    set -e                      # Abort on errors
-    cd ${SCRATCH_BUILD}
     if [ -e ${DONE_FILE} -a ${DONE_FILE} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
                          -a ${DONE_FILE} -nt ${SRCDIR}/zlib.sh ]
     then
-        echo "zlib: The enclosed zlib library has already been built; doing nothing"
+        echo "BEGIN MESSAGE"
+        echo "zlib has already been built; doing nothing"
+        echo "END MESSAGE"
     else
-        echo "zlib: Building enclosed zlib library"
-        
-        # Should we use gmake or make?
-        MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
-        # Should we use gtar or tar?
-        TAR=$(gtar --help > /dev/null 2> /dev/null && echo gtar || echo tar)
-        # Should we use gpatch or patch?
-        if [ -z "$PATCH" ]; then
-            PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+        echo "BEGIN MESSAGE"
+        echo "Building zlib"
+        echo "END MESSAGE"
+
+        # Build in a subshell
+        (
+        exec >&2                # Redirect stdout to stderr
+        if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
+            set -x              # Output commands
         fi
+        set -e                  # Abort on errors
+        cd ${SCRATCH_BUILD}
         
         # Set up environment
         export LDFLAGS
@@ -138,14 +136,15 @@ then
         
         date > ${DONE_FILE}
         echo "zlib: Done."
-    fi
-)
-
-    if (( $? )); then
-        echo 'BEGIN ERROR'
-        echo 'Error while building zlib. Aborting.'
-        echo 'END ERROR'
-        exit 1
+        
+        )
+        
+        if (( $? )); then
+            echo 'BEGIN ERROR'
+            echo 'Error while building zlib. Aborting.'
+            echo 'END ERROR'
+            exit 1
+        fi
     fi
     
 fi
