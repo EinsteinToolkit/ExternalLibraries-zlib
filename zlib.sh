@@ -21,16 +21,34 @@ if [ -z "${ZLIB_DIR}" ]; then
     echo "zlib selected, but ZLIB_DIR not set. Checking some places..."
     echo "END MESSAGE"
     
-    FILES="include/zlib.h lib/libz.a"
-    DIRS="/usr /usr/local /usr/local/zlib /usr/local/packages/zlib /usr/local/apps/zlib /opt/local ${HOME} ${HOME}/zlib c:/packages/zlib"
+    DIRS="/usr /usr/local /usr/local/packages /usr/local/apps /opt/local ${HOME} c:/packages"
+    # look into each directory
     for dir in $DIRS; do
-        ZLIB_DIR="$dir"
-        for file in $FILES; do
-            if [ ! -r "$dir/$file" ]; then
-                unset ZLIB_DIR
+        # libraries might have different file extensions
+        for libext in a so dylib; do
+            # libraries can be in /lib or /lib64
+            for libdir in lib64 lib; do
+                FILES="include/zlib.h $libdir/libz.$libext"
+                # assume this is the one and check all needed files
+                ZLIB_DIR="$dir"
+                for file in $FILES; do
+                    # discard this directory if one file was not found
+                    if [ ! -r "$dir/$file" ]; then
+                        unset ZLIB_DIR
+                        break
+                    fi
+                done
+                # don't look further if all files have been found
+                if [ -n "$ZLIB_DIR" ]; then
+                    break
+                fi
+            done
+            # don't look further if all files have been found
+            if [ -n "$ZLIB_DIR" ]; then
                 break
             fi
         done
+        # don't look further if all files have been found
         if [ -n "$ZLIB_DIR" ]; then
             break
         fi
