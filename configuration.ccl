@@ -2,7 +2,7 @@
 
 PROVIDES zlib
 {
-  SCRIPT zlib.sh
+  SCRIPT configure.sh
   LANG bash
   OPTIONS ZLIB_DIR ZLIB_INSTALL_DIR
 }
