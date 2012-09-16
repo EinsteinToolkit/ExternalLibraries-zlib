@@ -133,8 +133,8 @@ then
         
         echo "zlib: Unpacking archive..."
         pushd ${BUILD_DIR}
-        ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
-        ${PATCH} -p0 < ${SRCDIR}/dist/install.diff
+        ${TAR?} xzf ${SRCDIR}/dist/${NAME}.tar.gz
+        ${PATCH?} -p0 < ${SRCDIR}/dist/install.diff
         
         echo "zlib: Configuring..."
         cd ${NAME}
