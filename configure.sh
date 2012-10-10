@@ -80,7 +80,7 @@ then
     
     # Set locations
     THORN=zlib
-    NAME=zlib-1.2.5
+    NAME=zlib-1.2.7
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${ZLIB_INSTALL_DIR}" ]; then
@@ -134,7 +134,7 @@ then
         echo "zlib: Unpacking archive..."
         pushd ${BUILD_DIR}
         ${TAR?} xzf ${SRCDIR}/dist/${NAME}.tar.gz
-        ${PATCH?} -p0 < ${SRCDIR}/dist/install.diff
+        #${PATCH?} -p0 < ${SRCDIR}/dist/install.diff
         
         echo "zlib: Configuring..."
         cd ${NAME}
