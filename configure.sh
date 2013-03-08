@@ -156,7 +156,6 @@ then
         
         date > ${DONE_FILE}
         echo "zlib: Done."
-        
         )
         
         if (( $? )); then
