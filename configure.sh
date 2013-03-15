@@ -136,13 +136,10 @@ then
         echo "zlib: Unpacking archive..."
         pushd ${BUILD_DIR}
         ${TAR?} xzf ${SRCDIR}/dist/${NAME}.tar.gz
-        #${PATCH?} -p0 < ${SRCDIR}/dist/install.diff
         
         echo "zlib: Configuring..."
         cd ${NAME}
-        # Guess whether Cactus uses static linking, and if so, build
-        # only static libraries
-        ./configure --prefix=${ZLIB_DIR} $(if echo '' ${LDFLAGS} | grep -q static; then echo '' '--static'; fi)
+        ./configure --prefix=${ZLIB_DIR} --static
         
         echo "zlib: Building..."
         ${MAKE}
