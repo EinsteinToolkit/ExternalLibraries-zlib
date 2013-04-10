@@ -16,9 +16,7 @@ set -e                          # Abort on errors
 # Search
 ################################################################################
 
-if [ -z "${ZLIB_DIR}"                                                   \
-     -o "$(echo "${ZLIB_DIR}" | tr '[a-z]' '[A-Z]')" = 'NO_BUILD' ]
-then
+if [ -z "${ZLIB_DIR}" ]; then
     echo "BEGIN MESSAGE"
     echo "zlib selected, but ZLIB_DIR not set. Checking some places..."
     echo "END MESSAGE"
