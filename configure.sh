@@ -80,7 +80,7 @@ then
     
     # Set locations
     THORN=zlib
-    NAME=zlib-1.2.7
+    NAME=zlib-1.2.8
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${ZLIB_INSTALL_DIR}" ]; then
