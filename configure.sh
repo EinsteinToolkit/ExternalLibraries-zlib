@@ -170,14 +170,13 @@ fi
 ################################################################################
 
 # Set options
-if [ "${ZLIB_DIR}" = '/usr' -o "${ZLIB_DIR}" = '/usr/local' ]; then
-    ZLIB_INC_DIRS=''
-    ZLIB_LIB_DIRS=''
-else
-    ZLIB_INC_DIRS="${ZLIB_DIR}/include"
-    ZLIB_LIB_DIRS="${ZLIB_DIR}/lib"
+if [ "${ZLIB_DIR}" != '/usr' -a "${ZLIB_DIR}" = '/usr/local' -a \
+     "${ZLIB_DIR}" != 'NO_BUILD']
+then
+    : ${ZLIB_INC_DIRS="${ZLIB_DIR}/include"}
+    : ${ZLIB_LIB_DIRS="${ZLIB_DIR}/lib"}
 fi
-ZLIB_LIBS='z'
+: ${ZLIB_LIBS='z'}
 
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
