@@ -171,7 +171,7 @@ fi
 
 # Set options
 if [ "${ZLIB_DIR}" != '/usr' -a "${ZLIB_DIR}" = '/usr/local' -a \
-     "${ZLIB_DIR}" != 'NO_BUILD']
+     "${ZLIB_DIR}" != 'NO_BUILD' ]
 then
     : ${ZLIB_INC_DIRS="${ZLIB_DIR}/include"}
     : ${ZLIB_LIB_DIRS="${ZLIB_DIR}/lib"}
