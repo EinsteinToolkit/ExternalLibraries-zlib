@@ -98,7 +98,7 @@ then
     # Set locations
     THORN=zlib
     NAME=zlib-1.2.8
-    SRCDIR=$(dirname $0)
+    SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${ZLIB_INSTALL_DIR}" ]; then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
@@ -187,17 +187,17 @@ fi
 ################################################################################
 
 # Set options
-if [ "${ZLIB_DIR}" != '/usr' -a "${ZLIB_DIR}" != '/usr/local' -a        \
-     "${ZLIB_DIR}" != 'NO_BUILD' ]
-then
+if [ "${ZLIB_DIR}" != 'NO_BUILD' ]; then
     : ${ZLIB_INC_DIRS="${ZLIB_DIR}/include"}
     : ${ZLIB_LIB_DIRS="${ZLIB_DIR}/lib"}
 fi
 : ${ZLIB_LIBS='z'}
 
+ZLIB_INC_DIRS="$(${CCTK_HOME}/lib/sbin/strip-incdirs.sh ${ZLIB_INC_DIRS})"
+ZLIB_LIB_DIRS="$(${CCTK_HOME}/lib/sbin/strip-libdirs.sh ${ZLIB_LIB_DIRS})"
+
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
-echo "HAVE_ZLIB     = 1"
 echo "ZLIB_DIR      = ${ZLIB_DIR}"
 echo "ZLIB_INC_DIRS = ${ZLIB_INC_DIRS}"
 echo "ZLIB_LIB_DIRS = ${ZLIB_LIB_DIRS}"
