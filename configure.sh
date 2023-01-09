@@ -21,7 +21,7 @@ if [ -z "${ZLIB_DIR}" ]; then
     echo "zlib selected, but ZLIB_DIR not set. Checking some places..."
     echo "END MESSAGE"
     
-    DIRS="/usr /usr/local /usr/local/packages /usr/local/apps /opt/local ${HOME} c:/packages"
+    DIRS="/usr /usr/local /usr/local/packages /usr/local/apps /opt/local /opt/homebrew ${HOME} c:/packages"
     # look into each directory
     for dir in $DIRS; do
         # libraries might have different file extensions
