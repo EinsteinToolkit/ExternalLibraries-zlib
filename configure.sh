@@ -21,20 +21,38 @@ if [ -z "${ZLIB_DIR}" ]; then
     echo "zlib selected, but ZLIB_DIR not set. Checking some places..."
     echo "END MESSAGE"
     
-    DIRS="/usr /usr/local /usr/local/packages /usr/local/apps /opt/local /opt/homebrew ${HOME} c:/packages"
-    # look into each directory
-    for dir in $DIRS; do
-        # libraries might have different file extensions
-        for libext in a dll dll.a dylib so; do
-            # libraries can be in /lib or /lib64
-            for libdir in lib64 lib/x86_64-linux-gnu lib lib/i386-linux-gnu lib/arm-linux-gnueabihf; do
-                FILES="include/zlib.h $libdir/libz.$libext"
-                # assume this is the one and check all needed files
-                ZLIB_DIR="$dir"
-                for file in $FILES; do
-                    # discard this directory if one file was not found
-                    if [ ! -r "$dir/$file" ]; then
-                        unset ZLIB_DIR
+    if pkg-config zlib; then
+        inc_dirs="$(pkg-config zlib --static --cflags 2>/dev/null || pkg-config zlib --cflags)"
+        lib_dirs="$(pkg-config zlib --static --libs 2>/dev/null || pkg-config zlib --libs)"
+        libs="$(pkg-config zlib --static --libs 2>/dev/null || pkg-config zlib --libs)"
+        # Translate option flags into Cactus options:
+        # - for INC_DIRS, remove -I prefix from flags
+        # - for LIB_DIRS, remove all -l flags, and remove -L prefix from flags
+        # - for LIBS, keep only -l flags, and remove -l prefix from flags
+        ZLIB_INC_DIRS="$(echo '' $(for flag in $inc_dirs; do echo '' $flag; done | sed -e 's/^ -I//'))"
+        ZLIB_LIB_DIRS="$(echo '' $(for flag in $lib_dirs; do echo '' $flag; done | grep -v '^ -l' | sed -e 's/^ -L//'))"
+        ZLIB_LIBS="$(echo '' $(for flag in $libs; do echo '' $flag; done | grep '^ -l' | sed -e 's/^ -l//'))"
+        ZLIB_DIR="$(echo ${ZLIB_INC_DIRS} NO_BUILD | sed 's!/[^/]* .*!!')"
+    else
+        DIRS="/usr /usr/local /usr/local/packages /usr/local/apps /opt/local /opt/homebrew ${HOME} c:/packages"
+        # look into each directory
+        for dir in $DIRS; do
+            # libraries might have different file extensions
+            for libext in a dll dll.a dylib so; do
+                # libraries can be in /lib or /lib64
+                for libdir in lib64 lib/x86_64-linux-gnu lib lib/i386-linux-gnu lib/arm-linux-gnueabihf; do
+                    FILES="include/zlib.h $libdir/libz.$libext"
+                    # assume this is the one and check all needed files
+                    ZLIB_DIR="$dir"
+                    for file in $FILES; do
+                        # discard this directory if one file was not found
+                        if [ ! -r "$dir/$file" ]; then
+                            unset ZLIB_DIR
+                            break
+                        fi
+                    done
+                    # don't look further if all files have been found
+                    if [ -n "$ZLIB_DIR" ]; then
                         break
                     fi
                 done
@@ -48,11 +66,7 @@ if [ -z "${ZLIB_DIR}" ]; then
                 break
             fi
         done
-        # don't look further if all files have been found
-        if [ -n "$ZLIB_DIR" ]; then
-            break
-        fi
-    done
+    fi
     
     if [ -z "$ZLIB_DIR" ]; then
         echo "BEGIN MESSAGE"
