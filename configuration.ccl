@@ -2,7 +2,10 @@
 
 PROVIDES zlib
 {
-  SCRIPT configure.sh
+  SCRIPT src/detect.sh
   LANG bash
-  OPTIONS ZLIB_DIR ZLIB_INSTALL_DIR
+  OPTIONS ZLIB_DIR ZLIB_INSTALL_DIR ZLIB_LIBS ZLIB_INCLUDE_DIRS ZLIB_LIB_DIRS
 }
+
+# Pass configuration options to build script
+REQUIRES zlib
